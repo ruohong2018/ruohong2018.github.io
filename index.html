@@ -20,7 +20,7 @@
       var map = new BMap.Map("allmap");  //创建Map实例
       //初始化  调用centerAndZoom方法对地图初始化
       //  Point(116.404, 39.915) 以指定的经度和纬度创建一个地理点坐标
-      map.centerAndZoom(new BMap.Point(116.404, 39.915), 15); //坐标点 第二个级别参数必须有
+      map.centerAndZoom(new BMap.Point(30.180,120.200), 15); //坐标点 第二个级别参数必须有
       var myP1 = new BMap.Point(30.1903198,120.1660056);    //起点
       var myP2 = new BMap.Point(30.1879116,120.2310325);    //终点
       var driving = new BMap.DrivingRoute(map, {onSearchComplete:function(results){
