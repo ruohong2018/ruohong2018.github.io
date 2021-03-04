@@ -4,42 +4,68 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <title>按起终点经纬度规划路线</title>
-    <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main1119.css"/>
-    <style type="text/css">
-        #panel {
-            position: fixed;
-            background-color: white;
-            max-height: 90%;
-            overflow-y: auto;
-            top: 10px;
-            right: 10px;
-            width: 280px;
-        }
+    <style>
+    html,
+    body,
+    #container {
+        width: 100%;
+        height: 100%;
+    }
+    #panel {
+        position: fixed;
+        background-color: white;
+        max-height: 90%;
+        overflow-y: auto;
+        top: 10px;
+        right: 10px;
+        width: 280px;
+    }
+    #panel .amap-call {
+        background-color: #009cf9;
+        border-top-left-radius: 4px;
+   	    border-top-right-radius: 4px;
+    }
+    #panel .amap-lib-walking {
+	    border-bottom-left-radius: 4px;
+   	    border-bottom-right-radius: 4px;
+        overflow: hidden;
+    }
     </style>
-    <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.4.3&key=33621c74d5ccebd6220b74e064df5b27&plugin=AMap.Driving"></script>
-    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <title>位置经纬度 + 获取步行规划数据</title>
+    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
+    <script src="https://webapi.amap.com/maps?v=1.4.15&key=您申请的key值&plugin=AMap.Walking"></script>
+    <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
 </head>
 <body>
 <div id="container"></div>
 <div id="panel"></div>
 <script type="text/javascript">
-    //基本地图加载
     var map = new AMap.Map("container", {
-        resizeEnable: true,
-        center: [30.180,120.200],//地图中心点
-        zoom: 13 //地图显示的缩放级别
+        center: [116.397559, 39.89621],
+        zoom: 14
     });
-    //构造路线导航类
-    var driving = new AMap.Driving({
+
+    var walkOption = {
         map: map,
-        panel: "panel"
+        panel: "panel",
+        hideMarkers: false,
+        isOutline: true,
+        outlineColor: '#ffeeee',
+        autoFitView: true
+    }
+
+    // 步行导航
+    var walking = new AMap.Walking(walkOption)
+
+    //根据起终点坐标规划步行路线
+    walking.search([116.399028, 39.845042], [116.436281, 39.880719], function(status, result) {
+        // result即是对应的不行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_RidingResult
+        if (status === 'complete') {
+            log.success('步行路线数据查询成功')
+        } else {
+            log.error('步行路线数据查询失败' + result)
+        } 
     });
-    // 根据起终点经纬度规划驾车导航路线
-    driving.search(new AMap.LngLat(30.1903198,120.1660056), new AMap.LngLat(30.1879116,120.2310325));
-    driving.on("complete", function (result) {
-        console.log(JSON.stringify(result));
-    })
 </script>
 </body>
 </html>
