@@ -1,71 +1,38 @@
-<!doctype html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
-    <style>
-    html,
-    body,
-    #container {
-        width: 100%;
-        height: 100%;
-    }
-    #panel {
-        position: fixed;
-        background-color: white;
-        max-height: 90%;
-        overflow-y: auto;
-        top: 10px;
-        right: 10px;
-        width: 280px;
-    }
-    #panel .amap-call {
-        background-color: #009cf9;
-        border-top-left-radius: 4px;
-   	    border-top-right-radius: 4px;
-    }
-    #panel .amap-lib-walking {
-	    border-bottom-left-radius: 4px;
-   	    border-bottom-right-radius: 4px;
-        overflow: hidden;
-    }
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      #allmap {width: 100%;height:40%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+ body, html  {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+       html {width: 100%;height: 80%;overflow: hidden;margin:0;font-family:"微软雅黑";}
     </style>
-    <title>位置经纬度 + 获取步行规划数据</title>
-    <link rel="stylesheet" href="https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css" />
-    <script src="https://webapi.amap.com/maps?v=1.4.15&key=33621c74d5ccebd6220b74e064df5b27&plugin=AMap.Walking"></script>
-    <script src="https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js"></script>
-</head>
-<body>
-<div id="container"></div>
-<div id="panel"></div>
-<script type="text/javascript">
-    var map = new AMap.Map("container", {
-        center: [116.397559, 39.89621],
-        zoom: 14
-    });
-
-    var walkOption = {
-        map: map,
-        panel: "panel",
-        hideMarkers: false,
-        isOutline: true,
-        outlineColor: '#ffeeee',
-        autoFitView: true
-    }
-
-    // 步行导航
-    var walking = new AMap.Walking(walkOption)
-
-    //根据起终点坐标规划步行路线
-    walking.search([116.399028, 39.845042], [116.436281, 39.880719], function(status, result) {
-        // result即是对应的不行路线数据信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_RidingResult
-        if (status === 'complete') {
-            log.success('步行路线数据查询成功')
-        } else {
-            log.error('步行路线数据查询失败' + result)
-        } 
-    });
-</script>
-</body>
-</html>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=akFzfaOGHEz7hGx8izU1GIAX7tGh3Gbj"></script>
+    <title>起点和终点之间的GPS轨迹运动</title>
+  </head>
+  <body>
+   <div id="allmap"></div>
+ <!-- <div id = "content"></div>-->
+  </body>
+  <script type="text/javascript">
+      // 百度地图API功能
+      var map = new BMap.Map("allmap");  //创建Map实例
+      //初始化  调用centerAndZoom方法对地图初始化
+      //  Point(116.404, 39.915) 以指定的经度和纬度创建一个地理点坐标
+      map.centerAndZoom(new BMap.Point(120.08, 30.29), 8); //坐标点 第二个级别参数必须有
+      var myP1 = new BMap.Point(120.084093,30.298539);    //起点
+      var myP2 = new BMap.Point(120.075368,30.302669);    //终点
+      var walking = new BMap.WalkingRoute(map, {onSearchComplete:function(results){
+          if(walking.getStatus()== BMAP_STATUS_SUCCESS){
+              var pts = walking.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
+              var paths = pts.length;    //获得有几个点
+              console.log("点的个数为：");
+              console.log("paths=%d",paths);
+             for(var i=0;i<paths;i++){
+            console.log(pts[i].lng+" "+pts[i].lat);
+    //document.write (pts[i].lng+" "+pts[i].lat);
+        }}
+        }},{renderOptions:{map:map,autoViewport:true}});    //驾车实例
+     walking.search(myP1, myP2);    //显示一条公交线路
+  </script>
