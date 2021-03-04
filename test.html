@@ -1,0 +1,121 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>百度样式地图</title>
+    <link rel="stylesheet" href="https://openlayers.org/en/v4.1.1/css/ol.css" type="text/css">
+    <style type="text/css">
+        body, #map {
+            border: 0px;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            font-size: 13px;
+            overflow: hidden;
+        }
+    </style>
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.1.1/build/ol.js"></script>
+    <script type="text/javascript" src="../../../../plugin/jquery/jquery-1.8.3.js"></script>
+    <script type="text/javascript">
+        function init(){
+            var projection = ol.proj.get("EPSG:3857");
+            function getNavmapLayer(){
+                return new ol.layer.Tile({
+                    source: new ol.source.XYZ({  
+                        url:'http://webrd01.is.autonavi.com/appmaptile?x={x}&y={y}&z={z}&lang=zh_cn&size=1&scale=1&style=8'//7,8
+                    }),  
+                    projection: projection 
+                });
+            }
+            var navlayer = getNavmapLayer();
+            $.get("../data/route.json",null,function(result) {
+                console.log(result);
+                var startC = ol.proj.transform([result.start.location.lng, result.start.location.lat], "EPSG:4326", "EPSG:3857"),
+                    endC = ol.proj.transform([result.end.location.lng, result.end.location.lat], "EPSG:4326", "EPSG:3857");
+                var startF = new ol.Feature(new ol.geom.Point(startC));
+                startF.name = result.start.name;
+                var endF = new ol.Feature(new ol.geom.Point(endC));
+                endF.name = result.end.name;
+                var features = [startF, endF];
+                var routes = result.routes;
+                for(var i=0;i<routes.length;i++){
+                    var _route = routes[i];
+                    var steps = _route.steps;
+                    for(var j=0;j<steps.length;j++){
+                        var _step = steps[j];
+                        var tmcsPaths = _step.tmcsPaths;
+                        for(var m = 0;m<tmcsPaths.length;m++){
+                            var _coord = [];
+                            var path = tmcsPaths[m].path;
+                            for(var k=0;k<path.length;k++){
+                                var _path = path[k];
+                                _coord.push(ol.proj.transform([_path.lng, _path.lat], "EPSG:4326", "EPSG:3857"))
+                            }
+                            var pathF = new ol.Feature(new ol.geom.LineString(_coord));
+                            pathF.status = tmcsPaths[m].status;
+                            features.push(pathF);
+                        }
+
+                    }
+                }
+                var vectorSource = new ol.source.Vector({
+                    features: features
+                });
+                var vector = new ol.layer.Vector({
+                    source: vectorSource,
+                    style: function (feature) {
+                        var name = feature.name, status = feature.status;
+                        name = name?name.substring(0,1):"";
+                        var color = "";
+                        if(name==="起")color = "green";
+                        else if(name==="终")color = "red";
+
+                        var _color = "#8f8f8f";
+                        if(status==="拥堵")_color="#e20000";
+                        else if(status==="缓行")_color="#ff7324";
+                        else if(status==="畅通")_color="#00b514";
+
+                        return new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 15,
+                                fill: new ol.style.Fill({
+                                    color:color
+                                })
+                            }),
+                            stroke: new ol.style.Stroke({
+                                color: _color,
+                                width: 5,
+//                                lineDash:[10, 8]
+                            }),
+                            text: new ol.style.Text({
+                                text: name,
+                                font:"bold 15px 微软雅黑",
+                                fill: new ol.style.Fill({
+                                    color: 'white'
+                                }),
+                                textAlign:"center",
+                                textBaseline:"middle"
+                            })
+                        })
+                    }
+                });
+                var map = new ol.Map({
+                    target: 'map',
+                    layers: [navlayer, vector],
+                    view: new ol.View({
+                        center: ol.proj.transform([116.397428, 39.90923], 'EPSG:4326', 'EPSG:3857'),
+                        zoom: 13,
+                        minZoom: 3
+                    })
+                });
+            });
+       }
+    </script>
+</head>
+<body onLoad="init()">
+<div id="map">
+</div>
+</body>
+</html>
