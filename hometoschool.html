@@ -20,11 +20,11 @@
       var map = new BMap.Map("allmap");  //创建Map实例
       //初始化  调用centerAndZoom方法对地图初始化
       //  Point(116.404, 39.915) 以指定的经度和纬度创建一个地理点坐标
-      map.centerAndZoom(new BMap.Point(120.079, 30.550), 15); //坐标点 第二个级别参数必须有
-      var myP1 = new BMap.Point(120.079694,30.550624);    //起点
-      var myP2 = new BMap.Point(120.079876,30.550471);    //终点
-      var driving = new BMap.DrivingRoute(map, {onSearchComplete:function(results){
-          if(driving.getStatus()== BMAP_STATUS_SUCCESS){
+      map.centerAndZoom(new BMap.Point(119.883, 30.269), 15); //坐标点 第二个级别参数必须有
+      var myP1 = new BMap.Point(119.8830032,30.2690585);    //起点
+      var myP2 = new BMap.Point(119.9508548,30.2689242);    //终点
+      var walking = new BMap.WalkingRoute(map, {onSearchComplete:function(results){
+          if(walking.getStatus()== BMAP_STATUS_SUCCESS){
               var pts = walking.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
               var paths = pts.length;    //获得有几个点
               console.log("点的个数为：");
