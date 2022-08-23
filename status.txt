@@ -1,1 +1,3 @@
-True1
+open_door
+open_mirror
+open_trunk
