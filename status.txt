@@ -1,6 +1,5 @@
 open_door
 open_mirror
 open_trunk
-btn_forward
-btn_up
-avas_open
+open_window
+close_window
