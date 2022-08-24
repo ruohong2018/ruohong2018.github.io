@@ -1,3 +1,1 @@
-open_mirror
-open_trunk
-open_door
+
