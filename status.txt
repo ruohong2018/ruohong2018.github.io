@@ -1,1 +1,5 @@
-
+open_mirror
+open_trunk
+open_window
+close_window
+open_door
