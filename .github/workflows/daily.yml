@@ -5,7 +5,7 @@ name: Daily Push
 # 国际标准时间2点（北京时间10点）
 on:
   schedule:
-    - cron: '55 1 * * *'
+    - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
@@ -42,8 +42,8 @@ jobs:
       - name: Commit
         run: |
           git diff
-          git config --global user.email chainreactorbot@gmail.com
-          git config --global user.name chainreactorbot
+          git config --global user.email 529504056@qq.com
+          git config --global user.name 529504056@qq.com
           git add archive today.md
           git commit -m "每日安全资讯（`date +'%Y-%m-%d'`）"
 
@@ -51,3 +51,14 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
+  
+  del_runs:      
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 7
+          keep_minimum_runs: 7
