@@ -200,14 +200,14 @@ def init_bot(bot_conf: dict, proxy_url='', pick=False):
         if v['enabled']:
             key = getenv(v['secrets'], pick) or v['key']
             bot_name = globals()[f'{name}Bot']
-            if name == 'mail':
-                receiver = getenv(v['secrets_receiver']) or v['receiver']
-                bot = bot_name(v['address'], key, receiver, v['from'], v['server'])
-                bots.append(bot)
-            elif name == 'qq':
-                bot = bot_name(v['group_id'])
-                if bot.start_server(v['qq_id'], key):
-                    bots.append(bot)
+            # if name == 'mail':
+            #     receiver = getenv(v['secrets_receiver']) or v['receiver']
+            #     bot = bot_name(v['address'], key, receiver, v['from'], v['server'])
+            #     bots.append(bot)
+            # elif name == 'qq':
+            #     bot = bot_name(v['group_id'])
+            #     if bot.start_server(v['qq_id'], key):
+            #         bots.append(bot)
             elif name == 'telegram':
                 bot = bot_name(key, v['chat_id'], proxy_url)
                 if bot.test_connect():
