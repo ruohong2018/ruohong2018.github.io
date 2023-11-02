@@ -212,9 +212,9 @@ def init_bot(bot_conf: dict, proxy_url='', pick=False):
                 bot = bot_name(key, v['chat_id'], proxy_url)
                 if bot.test_connect():
                     bots.append(bot)
-            elif name == 'dingtalk':
-                bot = bot_name(key, getenv("DINGTALK_SECRET", pick) or v['secret'], proxy_url)
-                bots.append(bot)
+            # elif name == 'dingtalk':
+            #     bot = bot_name(key, getenv("DINGTALK_SECRET", pick) or v['secret'], proxy_url)
+            #     bots.append(bot)
             else:
                 bot = bot_name(key, proxy_url)
                 bots.append(bot)
