@@ -179,7 +179,7 @@ async def job(args):
     if args.config:
         config_path = Path(args.config).expanduser().absolute()
     else:
-        config_path = root_path.joinpath('config.json')
+        config_path = root_path.joinpath('config.yml')
     with open(config_path) as f:
         conf = json.load(f)
 
